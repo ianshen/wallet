@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="stylesheet" href="Static/css/bootstrap.min.css">
+<title>536舍费</title>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<input class="input-mini" type="text" placeholder="数额" id="amount"> <input
+					class="input-xxlarge" type="text" placeholder="用途" id="usage">
+				<button class="btn btn-danger" type="button" id="costing">出</button>
+				<button class="btn btn-success" type="button" id="earning">入</button>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span12">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>编号</th>
+							<th>收入/支出</th>
+							<th>数额</th>
+							<th>用途</th>
+							<th>时间</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach($this->list as $k=>$v){ ?>
+						<tr class="">
+							<td><?php echo $v['id']; ?></td>
+							<td><?php if($v['type']==1){echo '收入';}else{echo '支出';} ?></td>
+							<td><?php echo $v['amount']; ?></td>
+							<td><?php echo $v['usage']; ?></td>
+							<td><?php echo $v['ctime']; ?></td>
+						</tr>
+					<?php } ?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="Static/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$("#costing").click(function(){
+				$.ajax({
+					async:false,
+					type:"POST",
+					data:"amount="+$("#amount").val()+"&usage="+$("#usage").val()+"&type=2",
+					success : function(data) {
+						var data = $.parseJSON(data);
+						if(data.status==100000){
+							window.location.reload(true);
+						}else{
+							alert(data.info);
+						}
+					}
+				});
+			});
+			$("#earning").click(function(){
+				$.ajax({
+					async:false,
+					type:"POST",
+					data:"amount="+$("#amount").val()+"&usage="+$("#usage").val()+"&type=1",
+					success : function(data) {
+						var data = $.parseJSON(data);
+						if(data.status==100000){
+							window.location.reload(true);
+						}else{
+							alert(data.info);
+						}
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>
