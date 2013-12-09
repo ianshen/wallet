@@ -3,31 +3,10 @@
 class Controller_Index extends Controller_Abstract {
     
     public function init() {
-        $this->filters ['controller'] = array (
-            'checkLogin' => 1, 
-            'isChinaMobile' => 1, 
-            't' => 0 
-        );
-        $this->filters ['action'] ['index'] = array (
-            'checkLogin' => 1, 
-            'isChinaMobile' => 1 
-        );
-        $this->filters ['action'] ['test'] = array (
-            't' => 1 
-        );
-        $this->filters ['action'] ['context'] = array (
-            'checkLogin' => 0, 
-            'isChinaMobile' => 0 
-        );
-        Santa_Context::set ( 'user', array (
-            'firstname' => 'ian', 
-            'lastname' => 'shen' 
-        ) );
+    
     }
     
     public function index() {
-        //var_dump ( $this->getViewEngine () );
-        //$this->_view->name='ianshen';
         $db = Santa_Db::pool ( 'wallet' );
         if ($this->isAjax ()) {
             $amount = intval ( Santa_Context::form ( 'amount' ) );
@@ -48,6 +27,15 @@ class Controller_Index extends Controller_Abstract {
         $this->display ();
     }
     
+    public function delrecord() {
+        if ($this->isAjax ()) {
+            $db = Santa_Db::pool ( 'wallet' );
+            $id = intval ( Santa_Context::form ( 'action' ) );
+            $result = $db->delete ( 'record', "id={$id}" );
+            ajaxRender ( 100000, 'o' );
+        }
+    }
+    
     /**
      * 数据库池测试
      */
@@ -65,7 +53,6 @@ class Controller_Index extends Controller_Abstract {
         print_r ( $result );
         $result = $db->query ( "delete from test1 where id=21" );
         print_r ( $result );
-        
         //使用简单封装的方法操作数据
         //获取一条数据
         $result = $db->findOne ( "select * from test1 where id=3" );
@@ -96,86 +83,7 @@ class Controller_Index extends Controller_Abstract {
         print_r ( $result );
     }
     
-    /**
-     * 缓存池测试
-     */
-    public function cache() {
-        /* 缓存池测试 */
-        $mc = Santa_Cache::pool ( 'userinfo' );
-        $mc->set ( 'haha', 'haaaaaaaaa' );
-        print_r ( $mc->get ( 'haha' ) );
-        $mc->set ( 'xxx', array (
-            'id' => 3, 
-            'name' => 'ian' 
-        ) );
-        print_r ( $mc->get ( 'xxx' ) );
-        var_dump ( $mc->delete ( 'haha' ) );
-        var_dump ( $mc->delete ( 'haha' ) );
-        
-        $mc->set ( 'kkk', 3 );
-        var_dump ( $mc->increment ( 'kkk' ) );
-        var_dump ( $mc->increment ( 'kkk' ) );
-        var_dump ( $mc->increment ( 'kkk' ) );
-        var_dump ( $mc->decrement ( 'kkk', 17 ) );
-        var_dump ( $mc->get ( 'kkk' ) );
-        print_r ( $mc->stats () );
-        //文件缓存测试
-        $fc = Santa_Cache::pool ( 'file1' );
-        $fc->set ( 'haha', 'haaaaaaaaa' );
-        print_r ( $fc->get ( 'haha' ) );
-        var_dump ( $fc->del ( 'haha' ) );
-    }
-    
     public function test() {
         echo __METHOD__;
-    }
-    
-    /**
-     * 上下文Santa_Context测试
-     */
-    public function context() {
-        echo '获取在init()中设置的user上下文变量<br>';
-        $user = Santa_Context::get ( 'user' );
-        print_r ( $user );
-        Santa_Context::set ( 'xxx', 'jsflsdjdfs' );
-        Santa_Context::set ( 'xxxx', 'jsflsdjdfs' );
-        Santa_Context::set ( 'xxxxx', 'jsflsdjdfs' );
-        echo '<br>查看所有的上下文变量<br>';
-        print_r ( Santa_Context::$_data );
-    }
-    
-    /**
-     * 筛选器
-     * 
-     */
-    public function t() {
-        echo __METHOD__;
-    }
-    
-    /**
-     * 筛选器
-     * 检查是否登录
-     */
-    public function checkLogin() {
-        echo __METHOD__;
-    }
-    
-    /**
-     * 筛选器
-     * 检查是否移动用户
-     */
-    public function isChinaMobile() {
-        echo __METHOD__;
-    }
-    
-    /**
-     * Smarty引擎测试
-     * 此处的入口文件要使用smarty.php,smarty.php/index/smarty
-     */
-    public function smarty() {
-        /* $engine = $this->getViewEngine ();
-		print_r ( $engine ); */
-        $this->assign ( 'name', 'Smarty引擎测试页' );
-        $this->display ( 'smarty/index.html' );
     }
 }
