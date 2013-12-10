@@ -14,10 +14,14 @@
 		</div>
 		<div class="row-fluid">
 			<div class="span12 form-inline">
-				<input class="input-mini" type="text" placeholder="数额" id="amount"> <input
-					class="input-xxlarge" type="text" placeholder="用途" id="usage">
-				<button class="btn btn-danger" type="button" id="costing">支出</button>
-				<button class="btn btn-success" type="button" id="earning">收入</button>
+				<div class="span8">
+					<input class="input-mini" type="text" placeholder="数额" id="amount">
+					<input class="input-xxlarge" type="text" placeholder="用途"
+						id="usage">
+					<button class="btn btn-danger" type="button" id="costing">支出</button>
+					<button class="btn btn-success" type="button" id="earning">收入</button>
+				</div>
+				<div class="span4 form-inline">余额：33</div>
 			</div>
 		</div>
 		<div class="row-fluid">
@@ -50,6 +54,17 @@
 					<?php } ?>
 					</tbody>
 				</table>
+				<div class="pagination">
+					<ul>
+						<li><a href="#">上一页</a></li>
+						<li><a href="#">1</a></li>
+						<li><a href="#">2</a></li>
+						<li><a href="#">3</a></li>
+						<li><a href="#">4</a></li>
+						<li><a href="#">5</a></li>
+						<li><a href="#">下一页</a></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

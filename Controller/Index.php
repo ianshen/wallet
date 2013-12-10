@@ -2,6 +2,8 @@
 
 class Controller_Index extends Controller_Abstract {
     
+    private $sum_file = 'sum.dat';
+    
     public function init() {
     
     }
@@ -19,6 +21,9 @@ class Controller_Index extends Controller_Abstract {
                 'usage' => $usage, 
                 'type' => $type 
             ) );
+            if ($result === false) {
+                ajaxRender ( 100001, '' );
+            }
             ajaxRender ( 100000, 'o' );
         }
         $list = $db->findAll ( "select * from record order by ctime desc" );
@@ -34,6 +39,18 @@ class Controller_Index extends Controller_Abstract {
             $result = $db->delete ( 'record', "id={$id}" );
             ajaxRender ( 100000, 'o' );
         }
+    }
+    
+    /**
+     * 设置余额
+     */
+    public function setsum() {
+        $num = intval ( Santa_Context::param ( 'action' ) );
+        if (! file_exists ( $this->sum_file )) {
+            file_put_contents ( $this->sum_file, "0\n", FILE_APPEND );
+        }
+        file_put_contents ( $this->sum_file, $num . "\n", FILE_APPEND );
+        ajaxRender ( 100000, 'o' );
     }
     
     /**
