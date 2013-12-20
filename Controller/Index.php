@@ -9,7 +9,9 @@ class Controller_Index extends Controller_Abstract {
     }
     
     public function index() {
+        $groupId = 536;
         $db = Santa_Db::pool ( 'wallet' );
+        $group = $db->findOne ( "select * from `group` where id={$groupId}" );
         if ($this->isAjax ()) {
             $amount = intval ( Santa_Context::form ( 'amount' ) );
             check_empty ( $amount, 100001, '数额?' );
@@ -22,12 +24,29 @@ class Controller_Index extends Controller_Abstract {
                 'type' => $type 
             ) );
             if ($result === false) {
-                ajaxRender ( 100001, '' );
+                ajaxRender ( 100001, '失败' );
+            }
+            //更新余额
+            $money = $group ['money'];
+            switch ($type) {
+                case '1' :
+                    $money += $amount;
+                    break;
+                case '2' :
+                    $money -= $amount;
+                    break;
+                default :
+                    break;
+            }
+            $result = $db->update ( 'group', array (
+                'money' => $money 
+            ), "id={$groupId}" );
+            if ($result === false) {
+                ajaxRender ( 100001, '失败' );
             }
             ajaxRender ( 100000, 'o' );
         }
         $list = $db->findAll ( "select * from record order by ctime desc" );
-        $group = $db->findOne ( "select * from `group` where id=536" );
         $this->assign ( 'list', $list );
         $this->assign ( 'group', $group );
         $this->assign ( 'str', '#%这是测试模板字符串变量%%' );
@@ -38,7 +57,6 @@ class Controller_Index extends Controller_Abstract {
         if ($this->isAjax ()) {
             $db = Santa_Db::pool ( 'wallet' );
             $id = intval ( Santa_Context::form ( 'action' ) );
-            //$result = $db->delete ( 'record', "id={$id}" );
             $result = $db->update ( 'record', array (
                 'status' => 0 
             ), "id={$id}" );
@@ -46,25 +64,6 @@ class Controller_Index extends Controller_Abstract {
         }
     }
     
-    public function mjson() {
-        $data = base64_decode ( trim ( $_GET ['sdx'] ) );
-        $data = json_decode ( $data, true );
-        $url = $data ['uri_mob'];
-        $json = array (
-                'version' => 'v3',
-                'from' => $data ['from'],
-                'fromurl' => $url,
-                'title' => $data ['title'],
-                'titleurl' => $url,
-                'datetime' => $data ['time'],
-                'content' => $data ['summary'],
-                'contenturl' => $url,
-                'desc' => '',
-                'descurl' => $url
-        );
-        $json = json_encode ( $json );
-        echo $json;
-    }
     /**
      * 设置余额
      */
