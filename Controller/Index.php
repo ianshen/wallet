@@ -18,6 +18,13 @@ class Controller_Index extends Controller_Abstract {
             $usage = Santa_Context::form ( 'usage' );
             check_empty ( $usage, 100001, '用途?' );
             $type = Santa_Context::form ( 'type' );
+            switch ($type) {
+				case '2' :
+					$amount = - $amount;
+					break;
+				default :
+					break;
+			}
             $result = $db->insert ( 'record', array (
                 'amount' => $amount, 
                 'usage' => $usage, 
@@ -28,16 +35,7 @@ class Controller_Index extends Controller_Abstract {
             }
             //更新余额
             $money = $group ['money'];
-            switch ($type) {
-                case '1' :
-                    $money += $amount;
-                    break;
-                case '2' :
-                    $money -= $amount;
-                    break;
-                default :
-                    break;
-            }
+			$money += $amount;
             $result = $db->update ( 'group', array (
                 'money' => $money 
             ), "id={$groupId}" );
@@ -68,11 +66,16 @@ class Controller_Index extends Controller_Abstract {
      * 设置余额
      */
     public function setsum() {
+    	$groupId = 536;
         $num = intval ( Santa_Context::param ( 'action' ) );
-        if (! file_exists ( $this->sum_file )) {
-            file_put_contents ( $this->sum_file, "0\n", FILE_APPEND );
-        }
-        file_put_contents ( $this->sum_file, $num . "\n", FILE_APPEND );
+        check_empty ( $num, 100001, '数额?' );
+        $db = Santa_Db::pool ( 'wallet' );
+        $result = $db->update ( 'group', array (
+			'money' => $num 
+		), "id={$groupId}" );
+		if ($result === false) {
+			ajaxRender ( 100001, '失败' );
+		}
         ajaxRender ( 100000, 'o' );
     }
     
