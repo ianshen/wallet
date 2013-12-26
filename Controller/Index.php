@@ -2,51 +2,48 @@
 
 class Controller_Index extends Controller_Abstract {
     
-    private $sum_file = 'sum.dat';
+    private $walletId = 0;
     
     public function init() {
-    
+        $this->walletId = 536;
     }
     
     public function index() {
-        $groupId = 536;
         $db = Santa_Db::pool ( 'wallet' );
-        $group = $db->findOne ( "select * from `group` where id={$groupId}" );
+        $wallet = $db->findOne ( "select * from `wallet` where id={$this->walletId}" );
         if ($this->isAjax ()) {
             $amount = intval ( Santa_Context::form ( 'amount' ) );
             check_empty ( $amount, 100001, '数额?' );
             $usage = Santa_Context::form ( 'usage' );
             check_empty ( $usage, 100001, '用途?' );
             $type = Santa_Context::form ( 'type' );
-            switch ($type) {
-				case '2' :
-					$amount = - $amount;
-					break;
-				default :
-					break;
-			}
+            if ($type == 2) {
+                $amount = - $amount;
+            }
+            $money = $wallet ['money'];
+            $money += $amount;
             $result = $db->insert ( 'record', array (
+                'wallet_id' => $this->walletId, 
                 'amount' => $amount, 
                 'usage' => $usage, 
+                'wallet_money' => $money, 
                 'type' => $type 
             ) );
             if ($result === false) {
                 ajaxRender ( 100001, '失败' );
             }
             //更新余额
-            $money = $group ['money'];
-			$money += $amount;
-            $result = $db->update ( 'group', array (
+            $result = $db->update ( 'wallet', array (
                 'money' => $money 
-            ), "id={$groupId}" );
+            ), "id={$this->walletId}" );
             if ($result === false) {
                 ajaxRender ( 100001, '失败' );
             }
             ajaxRender ( 100000, 'o' );
         }
-        $list = $db->findAll ( "select * from record order by ctime desc" );
+        $list = $db->findAll ( "select * from record where wallet_id={$this->walletId} order by ctime desc" );
         $this->assign ( 'list', $list );
-        $this->assign ( 'group', $group );
+        $this->assign ( 'wallet', $wallet );
         $this->assign ( 'str', '#%这是测试模板字符串变量%%' );
         $this->display ();
     }
@@ -63,19 +60,18 @@ class Controller_Index extends Controller_Abstract {
     }
     
     /**
-     * 设置余额
+     * 设置钱包余额
      */
     public function setsum() {
-    	$groupId = 536;
         $num = intval ( Santa_Context::param ( 'action' ) );
         check_empty ( $num, 100001, '数额?' );
         $db = Santa_Db::pool ( 'wallet' );
-        $result = $db->update ( 'group', array (
-			'money' => $num 
-		), "id={$groupId}" );
-		if ($result === false) {
-			ajaxRender ( 100001, '失败' );
-		}
+        $result = $db->update ( 'wallet', array (
+            'money' => $num 
+        ), "id={$this->walletId}" );
+        if ($result === false) {
+            ajaxRender ( 100001, '失败' );
+        }
         ajaxRender ( 100000, 'o' );
     }
     
