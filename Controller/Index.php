@@ -44,7 +44,6 @@ class Controller_Index extends Controller_Abstract {
         $list = $db->findAll ( "select * from record where wallet_id={$this->walletId} order by ctime desc" );
         $this->assign ( 'list', $list );
         $this->assign ( 'wallet', $wallet );
-        $this->assign ( 'str', '#%这是测试模板字符串变量%%' );
         $this->display ();
     }
     
