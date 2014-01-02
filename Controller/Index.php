@@ -47,7 +47,27 @@ class Controller_Index extends Controller_Abstract {
         $this->display ();
     }
     
-    public function delrecord() {
+    public function debt() {
+    
+    }
+    
+    public function create_wallet() {
+        $money = intval ( Santa_Context::param ( 'action' ) );
+        $user = $_SESSION ['user'];
+        $db = Santa_Db::pool ( 'wallet' );
+        $result = $db->insert ( 'wallet', array (
+            'user_id' => $user ['id'], 
+            'name' => $name, 
+            'money' => $money, 
+            'member_count' => 1 
+        ) );
+        if ($result === false) {
+            ajaxRender ( 100001, '失败' );
+        }
+        ajaxRender ( 100000, 'o' );
+    }
+    
+    public function del_record() {
         if ($this->isAjax ()) {
             $db = Santa_Db::pool ( 'wallet' );
             $id = intval ( Santa_Context::form ( 'action' ) );

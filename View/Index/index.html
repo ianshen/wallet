@@ -19,18 +19,26 @@
 								class="icon-bar"></span></a> <a href="#" class="brand">536</a>
 							<div class="nav-collapse collapse navbar-responsive-collapse">
 								<ul class="nav">
-									<li class="active"><a href="#">主页</a></li>
-									<li><a href="#">链接</a></li>
+									<li class="active"><a href="#">钱包名钱</a></li>
+									<li><a href="#">钱包名钱</a></li>
+									<li><a href="#">钱包名钱</a></li>
+									<li><a href="#">钱包名钱</a></li>
+									<li><a href="#">钱包名钱</a></li>
+									<li><a href="#">钱包名钱</a></li>
+									<li><a href="#">钱包名钱</a></li>
+									<li><a href="#">钱包名钱</a></li>
+									<li><a href="#">账务</a></li>
 								</ul>
 								<ul class="nav pull-right">
 									<li><a href="#">右边链接</a></li>
 									<li class="divider-vertical"></li>
 									<li class="dropdown"><a data-toggle="dropdown"
-										class="dropdown-toggle" href="#">下拉菜单<strong class="caret"></strong></a>
+										class="dropdown-toggle" href="#">管理<strong class="caret"></strong></a>
 										<ul class="dropdown-menu">
-											<li><a href="#">下拉导航1</a></li>
+											<li><a href="#">创建钱包</a></li>
+											<li><a href="#">销毁钱包</a></li>
 											<li class="divider"></li>
-											<li><a href="#">链接3</a></li>
+											<li><a href="#">退出</a></li>
 										</ul></li>
 								</ul>
 							</div>
@@ -54,7 +62,7 @@
 			<div class="span12 form-inline">
 				<div class="span8">
 					<input class="input-mini" type="text" placeholder="数额" id="amount">
-					<input class="input-xxlarge" type="text" placeholder="用途"
+					<input class="input-xxlarge" type="text" placeholder="备注"
 						id="usage">
 					<button class="btn btn-success" type="button" id="earning">+</button>
 					<button class="btn btn-danger" type="button" id="costing">-</button>
@@ -73,9 +81,8 @@
 							<th>编号</th>
 							<th>时间</th>
 							<th>数额</th>
-							<th>用途</th>
+							<th>备注</th>
 							<th>钱包余额</th>
-							<th>收入/支出</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -97,9 +104,6 @@
 							</td>
 							<td>
 								<?php echo $v['wallet_money']; ?>
-							</td>
-							<td>
-								<?php if($v['type']==1){echo '收入';}else{echo '支出';} ?>
 							</td>
 							<td><?php if($v['status']){ ?><button class="btn btn-mini del_record hide" type="button"
 									action-id="<?php echo $v['id'] ?>">删除</button><?php } ?></td>
@@ -157,7 +161,7 @@
 					$.ajax({
 						async : false,
 						type : "POST",
-						url : "index.php?c=index&a=delrecord",
+						url : "index.php?c=index&a=del_record",
 						data : "action=" + action,
 						success : function(data) {
 							var data = $.parseJSON(data);
