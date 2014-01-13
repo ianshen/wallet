@@ -67,6 +67,17 @@ class Controller_Index extends Controller_Abstract {
         ajaxRender ( 100000, 'o' );
     }
     
+    public function delete_wallet() {
+        $walletId = intval ( Santa_Context::param ( 'action' ) );
+        $user = $_SESSION ['user'];
+        $db = Santa_Db::pool ( 'wallet' );
+        $result = $db->delete ( 'wallet', "id={$walletId}" );
+        if ($result === false) {
+            ajaxRender ( 100001, '失败' );
+        }
+        ajaxRender ( 100000, 'o' );
+    }
+    
     public function del_record() {
         if ($this->isAjax ()) {
             $db = Santa_Db::pool ( 'wallet' );
